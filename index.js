@@ -4,8 +4,6 @@ var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 
-// New stuff to add
-//---------------------------------------------------
 const hbs = require('hbs')
 const MongoClient = require('mongodb').MongoClient
 const passport = require('passport')
@@ -13,20 +11,13 @@ const Strategy = require('passport-local').Strategy
 const authUtils = require('./utils/auth')
 const session = require('express-session')
 const flash = require('connect-flash')
-// --------------------------------------------------
 
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
-
-// Add new routes
-// --------------------------------------------------
 const authRouter = require('./routes/auth')
-// --------------------------------------------------
 
 var app = express()
 
-// Connect to db
-// --------------------------------------------------
 MongoClient.connect('mongodb://localhost', (err, client) => {
   if (err) {
     throw err
@@ -36,10 +27,6 @@ MongoClient.connect('mongodb://localhost', (err, client) => {
   const users = db.collection('users')
   app.locals.users = users
 })
-// --------------------------------------------------
-
-// Configure passport
-// --------------------------------------------------
 passport.use(
   new Strategy((username, password, done) => {
     app.locals.users.findOne({ username }, (err, user) => {
@@ -67,16 +54,11 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { id })
 })
-// --------------------------------------------------
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 
-// Set partials for handlebars
-// --------------------------------------------------
 hbs.registerPartials(path.join(__dirname, 'views/partials'))
-// --------------------------------------------------
 
 app.use(logger('dev'))
 app.use(express.json())
